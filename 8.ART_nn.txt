@@ -1,0 +1,50 @@
+''' Write a python program to illustrate ART neural network'''
+
+
+
+import numpy as np
+     
+
+class ARTNode:
+  """
+  Represents a single node in the ART network.
+  """
+  def __init__(self, vigilance):
+    self.vigilance = vigilance  # Matching threshold (0 to 1)
+    self.weights = None  # None initially, learned later
+     
+
+vigilance = 0.8  # Matching threshold (0 to 1)
+learning_rate = 0.1  # Learning rate for weight updates
+data = [np.array([0.1, 0.2, 0.3]), np.array([0.2, 0.3, 0.4]),
+        np.array([0.7, 0.8, 0.9]), np.array([0.8, 0.7, 0.6])]
+     
+
+nodes = []
+for pattern in data:
+  found_match = False
+  for node in nodes:
+    # Calculate similarity between pattern and node weights
+    similarity = np.dot(pattern, node.weights) / (np.linalg.norm(pattern) * np.linalg.norm(node.weights))
+
+    # Check if similarity meets vigilance criteria
+    if similarity >= vigilance:
+      # Update node weights with learning rate
+      node.weights = (1 - learning_rate) * node.weights + learning_rate * pattern
+      found_match = True
+      break
+
+  # If no match found, create a new node with this pattern as its weight
+  if not found_match:
+    new_node = ARTNode(vigilance)
+    new_node.weights = pattern.copy()
+    nodes.append(new_node)
+     
+
+# Print the weights of each cluster node
+for node in nodes:
+  print("Cluster weights:", node.weights)
+     
+
+
+     
